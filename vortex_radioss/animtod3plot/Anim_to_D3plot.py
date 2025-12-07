@@ -8,7 +8,6 @@ from lasso.dyna.array_type import ArrayType
 from vortex_radioss.animtod3plot.RadiossReader import RadiossReader
 
 import numpy as np
-from numpy.core import defchararray
 import os
 import time
 from tqdm import tqdm
