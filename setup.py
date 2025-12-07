@@ -14,9 +14,9 @@ def get_requirements():
         return requirements
 
 def main():
-    setup(name='AnimtoD3plot',
-        version='1.0',
-        description='AnimToD3plot conversion package',
+    setup(name='vortex_radioss',
+        version='1.02',
+        description='vortex-radioss library for Radioss',
         license="Mozilla Public License Version 2.0",
         packages=['vortex_radioss.animtod3plot'],
         install_requires=get_requirements(),)

@@ -146,8 +146,8 @@ class convert:
         top = convert.rotate_tensor(np.array(data[0]), rotation_matrices)
         bottom = convert.rotate_tensor(np.array(data[1]), rotation_matrices)
 
-        out[:, 0] = top  # Top integration point
-        out[:, -1] = bottom  # Bottom integration point
+        out[:, 0] = bottom  # Bottom integration point
+        out[:, -1] = top  # Top integration point
 
         return out
 
@@ -165,8 +165,8 @@ class convert:
         top = convert.rotate_tensor(np.array(data[0]), rotation_matrices)
         bottom = convert.rotate_tensor(np.array(data[1]), rotation_matrices)
 
-        out[:, -1] = top  # Top point
         out[:, 0] = bottom  # Bottom point
+        out[:, -1] = top  # Top point
 
         return out
     
@@ -218,7 +218,8 @@ class readAndConvert:
         use_solid_mask=False,
         use_beam_mask=False,
         silent=False,
-        no_warnings=False
+        no_warnings=False,
+        show_rigidwall=False
     ):
         """Constructor for a readAndConvert
 
@@ -235,7 +236,7 @@ class readAndConvert:
 
         self._start=time.time()
         self._d3plot = D3plot()
-        self.A_2_D(filepath, use_shell_mask, use_solid_mask, use_beam_mask, silent, no_warnings)
+        self.A_2_D(filepath, use_shell_mask, use_solid_mask, use_beam_mask, silent, no_warnings, show_rigidwall)
 
     def sequential(input_array):
         
@@ -269,7 +270,7 @@ class readAndConvert:
             __ = 0
 
         for search_str in search_str_arr:       
-            ___ = np.flatnonzero(np.core.defchararray.find(names,search_str)!=-1)
+            ___ = np.flatnonzero(np.char.chararray.find(names,search_str)!=-1)
 
             _[___] = __
 
@@ -308,7 +309,7 @@ class readAndConvert:
         # Function to sort strings in human order (so file_stemA101 comes before file_stemA1000)
         return [int(text) if text.isdigit() else text.lower() for text in re.split('(\\d+)', s)]
 
-    def A_2_D(self,file_stem, use_shell_mask, use_solid_mask, use_beam_mask, silent, no_warnings):
+    def A_2_D(self,file_stem, use_shell_mask, use_solid_mask, use_beam_mask, silent, no_warnings, show_rigidwall):
     
         if os.path.isfile(file_stem + "d3plot"):
             return True
@@ -343,7 +344,9 @@ class readAndConvert:
                         # However, when the model uses 8 integration points, the solver currently 
                         # provides the average value instead of individual data points.
 
-        allowable_part_strings = ["_rigid_wall_",  ": RIGIDWALL_"]
+        allowable_part_strings = []
+        if show_rigidwall:
+            allowable_part_strings += ["_rigid_wall_",  ": RIGIDWALL_"]
         if rr.raw_header["nbFacets"] > 0:
              
             shell_ids_tracker = readAndConvert.generate_sorter(readAndConvert.sequential(rr.arrays["element_shell_ids"]))
@@ -468,10 +471,10 @@ class readAndConvert:
         __                                                          = np.concatenate([shell_part_names, beam_part_names, solid_part_names, sph_part_names])        
         # Set all parts with invalid names' PIDS to zero
         
-        ____ = np.array([])
+        ____ = np.array([]).astype(int)
         # Allowable part strings was defined under shell mask. As these parts have a PID of 0 we need to generate new PIDs.
         for search_str in allowable_part_strings:       
-            ___ = np.flatnonzero(np.core.defchararray.find(__,search_str)!=-1)
+            ___ = np.flatnonzero(np.char.chararray.find(__,search_str)!=-1)
             _[___] = 0
             ____ = np.concatenate([____,___]).astype(int)
 
@@ -999,10 +1002,9 @@ class readAndConvert:
                                                  
         return True
         
+        
 if __name__ == '__main__':   
              
-    file_stem = "C:/Users/PC/Downloads/roofc/DynaOpt"
-
-    a2d = readAndConvert(file_stem, use_shell_mask=False, silent=False, no_warnings=False)
-    
-      
+    file_stem = [r"/test/run_s1"]
+    for _ in file_stem:
+        a2d = readAndConvert(_, use_shell_mask=True, silent=False, no_warnings=False, show_rigidwall=True)      
