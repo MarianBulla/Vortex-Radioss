@@ -425,10 +425,28 @@ class RadiossTHReader:
         self.array["global"]["spring_energy"], position                 = self.slicer(position, 1, self.ftype)
         self.array["global"]["contact_energy"], position                = self.slicer(position, 1, self.ftype)
         self.array["global"]["hourglass_energy"], position              = self.slicer(position, 1, self.ftype)
-        if nglob                                                         == 15:
+        if nglob                                                         >= 15:
             self.array["global"]["elastic contact energy"], position        = self.slicer(position, 1, self.ftype)
             self.array["global"]["frictional contact energy"], position     = self.slicer(position, 1, self.ftype)
             self.array["global"]["damping contact energy"], position        = self.slicer(position, 1, self.ftype)
+        if nglob                                                         >= 16:
+            self.array["global"]["plastic work"], position        = self.slicer(position, 1, self.ftype)
+        if nglob                                                         >= 17:            
+            self.array["global"]["added mass"], position     = self.slicer(position, 1, self.ftype)
+        if nglob                                                         >= 18:             
+            self.array["global"]["percentage added mass"], position        = self.slicer(position, 1, self.ftype)            
+        if nglob                                                         >= 19:             
+            self.array["global"]["inlet mass"], position        = self.slicer(position, 1, self.ftype)            
+        if nglob                                                         >= 20:             
+            self.array["global"]["outlet mass"], position        = self.slicer(position, 1, self.ftype)      
+        if nglob                                                         >= 21:             
+            self.array["global"]["inlet energy"], position        = self.slicer(position, 1, self.ftype)            
+        if nglob                                                         >= 22:             
+            self.array["global"]["outlet energy"], position        = self.slicer(position, 1, self.ftype)              
+        if nglob                                                         >= 23:             
+            for i_extra_nglob, extra_nglob in enumerate(range(23, nglob+1)):
+                self.array["global"]["extra glob var " + str(i_extra_nglob + 1)], position        = self.slicer(position, 1, self.ftype)
+                
         __, position                                                     = self.slicer(position, 1, self.ftype)
         # Part variables
         if npart_nthpart                                                > 0:
